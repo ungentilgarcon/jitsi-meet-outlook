@@ -224,6 +224,7 @@ namespace JitsiMeetOutlook
             oldDomain = newDomain;
 
             var oldRoomId = Utils.findRoomId(oldBody, newDomain);
+            string updatedMeetingUrl = JitsiUrl.getUrlBase() + newRoomIdLegal;
 
             Word.Hyperlinks wLinks = wordDocument.Hyperlinks;
             for (int i = 1; i <= wLinks.Count; i++)
@@ -231,14 +232,13 @@ namespace JitsiMeetOutlook
                 if (wLinks[i].Address.Contains(oldDomain))
                 {
                     var urlNew = wLinks[i].TextToDisplay.Replace(Utils.findRoomId(appointmentItem.Body, oldDomain), newRoomIdLegal);
-                    wLinks[i].Address = fixUrl(urlNew);
-                    wLinks[i].TextToDisplay = fixUrl(urlNew);
+                    updatedMeetingUrl = fixUrl(urlNew);
+                    wLinks[i].Address = updatedMeetingUrl;
+                    wLinks[i].TextToDisplay = updatedMeetingUrl;
                 }
             }
 
-            appointmentItem.Location = Properties.Settings.Default.addUrlToLocation
-                ? JitsiUrl.getUrlBase() + newRoomIdLegal
-                : "Jitsi Meet";
+            updateAppointmentLocation(updatedMeetingUrl);
 
             // Update PIN 
             var newPIN = await Globals.ThisAddIn.JitsiApiService.getPIN(newRoomIdLegal);
@@ -314,10 +314,19 @@ namespace JitsiMeetOutlook
                             urlNew = urlMatch + "#config." + setting + "=true";
                         }
                     }
-                    wLinks[i].Address = fixUrl(urlNew);
-                    wLinks[i].TextToDisplay = fixUrl(urlNew);
+                    string updatedMeetingUrl = fixUrl(urlNew);
+                    wLinks[i].Address = updatedMeetingUrl;
+                    wLinks[i].TextToDisplay = updatedMeetingUrl;
+                    updateAppointmentLocation(updatedMeetingUrl);
                 }
             }
+        }
+
+        private void updateAppointmentLocation(string meetingUrl)
+        {
+            appointmentItem.Location = Properties.Settings.Default.addUrlToLocation
+                ? meetingUrl
+                : "Jitsi Meet";
         }
 
         private string fixUrl(string url)

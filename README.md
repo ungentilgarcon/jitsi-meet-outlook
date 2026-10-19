@@ -142,6 +142,12 @@ Since this plug-in is brand new, any feedback would be most appreciated!
 
 ## Changelog
 
+### v0.8.9
+
+Bugfixes:
+
+- Keep Outlook's Location field synchronized with the actual meeting hyperlink when changing the room ID or toggling the join options in the appointment ribbon panel.
+
 ### v0.8.8
 
 Enhancements:
