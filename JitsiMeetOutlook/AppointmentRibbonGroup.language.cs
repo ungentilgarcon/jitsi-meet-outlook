@@ -7,6 +7,8 @@ namespace JitsiMeetOutlook
 
         private void setLanguage()
         {
+            this.groupJitsiMeetControls.Label = "VDV Visio";
+            this.groupNewMeeting.Label = "VDV Visio";
             this.fieldRoomID.Label = Globals.ThisAddIn.getElementTranslation("appointmentRibbonGroup", "fieldRoomID");
             this.fieldRoomID.SuperTip = Globals.ThisAddIn.getElementTranslation("appointmentRibbonGroup", "fieldRoomIDSuperTip");
             this.buttonRandomRoomID.Label = Globals.ThisAddIn.getElementTranslation("appointmentRibbonGroup", "buttonRandomRoomID");

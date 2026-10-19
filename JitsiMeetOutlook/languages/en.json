@@ -42,6 +42,7 @@
     "labelRequireDisplayName": "Require Name",
     "labelStartWithAudioMuted": "Mute on Start",
     "labelStartWithVideoMuted": "No Video on Start",
+    "checkBoxAddUrlToLocation": "Add URL to appointment Location field",
     "groupBoxLanguage": "Language",
     "comboBoxLanguageItems": {
       "en": "English",

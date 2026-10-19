@@ -3,7 +3,7 @@
     <Profiles />
     <Settings>
         <Setting Name="Domain" Type="System.String" Scope="User">
-            <Value Profile="(Default)">meet.jit.si</Value>
+            <Value Profile="(Default)">visioconference.villeurbanne.fr</Value>
         </Setting>
         <Setting Name="requireDisplayName" Type="System.Boolean" Scope="User">
             <Value Profile="(Default)">False</Value>
@@ -14,6 +14,9 @@
         <Setting Name="startWithVideoMuted" Type="System.Boolean" Scope="User">
             <Value Profile="(Default)">False</Value>
         </Setting>
+        <Setting Name="addUrlToLocation" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">True</Value>
+        </Setting>
         <Setting Name="roomID" Type="System.String" Scope="User">
             <Value Profile="(Default)" />
         </Setting>
@@ -21,16 +24,16 @@
             <Value Profile="(Default)" />
         </Setting>
         <Setting Name="language" Type="System.String" Scope="User">
-            <Value Profile="(Default)">en</Value>
+            <Value Profile="(Default)">fr</Value>
         </Setting>
         <Setting Name="randomRoomIdGeneratorMode" Type="System.String" Scope="User">
             <Value Profile="(Default)">phrase</Value>
         </Setting>
         <Setting Name="conferenceMapperEndpoint" Type="System.String" Scope="User">
-            <Value Profile="(Default)">https://api.jitsi.net/conferenceMapper</Value>
+            <Value Profile="(Default)">https://visioconference.villeurbanne.fr/conferenceMapper</Value>
         </Setting>
         <Setting Name="phoneNumberListEndpoint" Type="System.String" Scope="User">
-            <Value Profile="(Default)">https://api.jitsi.net/phoneNumberList</Value>
+            <Value Profile="(Default)">https://visioconference.villeurbanne.fr/phoneNumberList</Value>
         </Setting>
         <Setting Name="conferenceSchedulerEndpoint" Type="System.String" Scope="User">
             <Value Profile="(Default)" />

@@ -35,6 +35,33 @@ The screenshots below display the features of implemented in this add-in.
 
 Go to the [releases](/../../releases) page and download the MSI installer for the latest version.
 
+By default, meetings, conference PIN lookups, and dial-in number lookups use `visioconference.villeurbanne.fr`. No server configuration is required. If you choose a different domain in the add-in settings, the PIN and dial-in lookups follow that domain automatically. Custom API endpoints and the optional conference scheduler can still be supplied during installation.
+
+The add-in appears in Outlook as **Visio Villeurbanne**, and its default display language is French. You can change the language from the settings menu.
+
+## Features and settings
+
+The settings window lets each Outlook user configure these defaults:
+
+| Setting | What it does | Default |
+| --- | --- | --- |
+| Jitsi domain | Chooses the server used to create meeting links. The Villeurbanne server is preselected; a custom host can be entered instead. PIN and dial-in lookups follow the selected domain unless custom API endpoints were supplied during installation. | `visioconference.villeurbanne.fr` |
+| Default room ID | Chooses whether a new meeting gets a generated room ID or a reusable custom room ID. | Random |
+| Random generator mode | Chooses a memorable phrase or a random string when room IDs are generated. | Phrase |
+| Require name | Requires participants to enter a display name when joining. | Off |
+| Mute on start | Adds the Jitsi option to start participants with their microphones muted. | Off |
+| No video on start | Adds the Jitsi option to start participants with their cameras off. | Off |
+| Add URL to appointment Location | Puts the meeting URL in Outlook's Location field as well as the appointment body. The add-in continues to recognize and show its meeting controls for these appointments. | On for new user profiles |
+| Language | Sets the add-in's display language. | French |
+
+The available interface languages are English, French, German, Spanish, Russian, and Czech. The URL-in-Location preference is saved per Outlook user. Existing users who already saved this preference as off may need to turn it on once in **Settings → Meeting Options**; changing the default does not overwrite a saved user preference.
+
+When a new meeting is created from a selected calendar time slot, its start and end times are initialized from that selection. If Outlook has no valid time slot selected, the appointment uses Outlook's normal default times.
+
+The Outlook calendar ribbon is branded **VDV Visio** with the **Nouvelle visio villeurbanne** button and Villeurbanne pictogram. The add-in also suppresses proxy HTTP 407 authentication errors for optional PIN, dial-in, and scheduler requests; a meeting can still be created when those optional details cannot be retrieved.
+
+The release's VSTO manifest uses a local self-signed test certificate, while the MSI itself is unsigned. The optional `Install-VisioVilleurbanneCertificate.ps1` helper expects the matching `Visiovilleurbanne.cer` file beside the script and imports it into the current user's Trusted Publishers and Root stores. Use that helper only when intentionally trusting this test certificate; use an organization-issued code-signing certificate for production distribution.
+
 For versions prior to 0.5.0: Make sure to download and run the JitsiMeetOutlook-v<version>-windows-<architecture>.msi file that matches the architecture of your installation of Microsoft Office. I.e. if Office was installed as 64-bit, then run JitsiMeetOutlook-v0.4.0-windows-x64.msi.
 
 ### Upgrade
@@ -56,7 +83,7 @@ As of v0.4.0, the add-in can be installed via command line with custom setting p
 - `REQNAME`: Require name by default in new Jitsi Meet appointments. (True/False)
 - `NOAUDIO`: Mute audio by default in new Jitsi Meet appointments. (True/False)
 - `NOVIDEO`: Disable video by default in new Jitsi Meet appointments. (True/False)
-- `LANG`: Specify the display language. Currently, English, French, German, and Russian are available. (en/fr/de/ru)
+- `LANG`: Specify the display language. English, French, German, Spanish, Russian, and Czech are available. (en/fr/de/es/ru/cz)
 - `CONFERENCEMAPPER_ENDPOINT`: Endpoint to get the Conference PIN from
 - `PHONENUMBERLIST_ENDPOINT`: Endpoint to get the Phone Number from to call in
 - `CONFERENCESCHEDULER_ENDPOINT`: Endpoint to send the conference information to in advance, in order to make the call available for call in before the first person joins
@@ -64,7 +91,7 @@ As of v0.4.0, the add-in can be installed via command line with custom setting p
 
 Example install command: `msiexec /i "C:\Downloads\JitsiMeetOutlook-v0.6.0-windows-anycpu.msi" TARGETDIR="C:\Program Files (x86)\Jitsi Meet Outlook" DOMAIN="my.domain.com" ROOMID="PermanentRoomName" MODE="string" REQNAME="True" NOAUDIO="True" NOVIDEO="True" LANG="en" CONFERENCEMAPPER_ENDPOINT="https://my.domain.com/conferenceMapper" PHONENUMBERLIST_ENDPOINT="https://my.domain.com/phoneNumberList" /passive`
 
-All settings can be changed from the settings menu after installation.
+The domain, room ID, meeting defaults, language, and random generator mode can be changed from the settings menu after installation. The meeting URL in Location is controlled by the persistent checkbox described above. Custom API endpoints and conference scheduler configuration are installer parameters rather than settings-menu options.
 
 ### Proxy
 
@@ -89,9 +116,9 @@ The published code and installer is still at an early stage. Preliminarily, the 
 
 - [ ] Add RTF body text to appointment for improved appearance
 - [ ] Shift the controls in the appointment ribbon to the left
-- [ ] Create appointment with time as specified in the calendar view
+- [x] Create appointment with time as specified in the calendar view
 - [ ] Add checks for Outlook having been installed on the target computer
-- [ ] Add persistent setting: add URL to Location field of appointment
+- [x] Add persistent setting: add URL to Location field of appointment
 - [x] Add setting allowing users to generate random strings instead of random combinations of words (0.6.0)
 - [x] Add possibility for preconfiguration of settings via silent installs (v0.4.0)
 - [x] Make the installation procedure less painful (v0.2.0)
@@ -107,6 +134,56 @@ The published code and installer is still at an early stage. Preliminarily, the 
 Since this plug-in is brand new, any feedback would be most appreciated!
 
 ## Changelog
+
+### v0.8.8
+
+Enhancements:
+
+- Add a persistent, enabled-by-default option to put the Jitsi meeting URL in the appointment's Location field while retaining add-in recognition and controls.
+- Use the selected calendar time slot for a newly created meeting appointment when Outlook provides valid selected start and end times.
+- Document the Villeurbanne defaults, user settings, optional API configuration, proxy behavior, and certificate trust requirements.
+
+### v0.8.7
+
+Enhancements:
+
+- Crop the Villeurbanne conference pictogram's whitespace so the Outlook ribbon icon appears larger.
+
+### v0.8.6
+
+Enhancements:
+
+- Replace the Outlook ribbon button icon with the Villeurbanne video-conference pictogram.
+
+### v0.8.4
+
+Enhancements:
+
+- Default to French and display the add-in in Outlook as "Visio Villeurbanne".
+
+### v0.8.5
+
+Enhancements:
+
+- Rename the Outlook ribbon group to "VDV Visio" and its new-meeting button to "Nouvelle visio villeurbanne".
+
+### v0.8.3
+
+Enhancements:
+
+- Use `visioconference.villeurbanne.fr` as the default Jitsi server and route PIN and dial-in lookups through the selected Jitsi domain.
+
+### v0.8.2
+
+Bugfixes:
+
+- Suppress proxy-authentication errors when the proxy rejects an API request with HTTP 407.
+
+### v0.8.1
+
+Bugfixes:
+
+- Suppress proxy-authentication errors when the optional conference PIN is unavailable.
 
 ### v0.7.0
 

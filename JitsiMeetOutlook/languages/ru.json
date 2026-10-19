@@ -42,6 +42,7 @@
     "labelRequireDisplayName": "Указание имени",
     "labelStartWithAudioMuted": "Начать без звука",
     "labelStartWithVideoMuted": "Начать без видео",
+    "checkBoxAddUrlToLocation": "Добавлять ссылку в поле «Место»",
     "groupBoxLanguage": "Язык",
     "comboBoxLanguageItems": {
       "en": "Английский",

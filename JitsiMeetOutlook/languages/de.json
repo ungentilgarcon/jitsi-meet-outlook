@@ -42,6 +42,7 @@
     "labelRequireDisplayName": "Name erforderlich",
     "labelStartWithAudioMuted": "Stumm beitreten",
     "labelStartWithVideoMuted": "Ohne Video beitreten",
+    "checkBoxAddUrlToLocation": "URL zum Feld „Ort“ hinzufügen",
     "groupBoxLanguage": "Sprache",
     "comboBoxLanguageItems": {
       "en": "English",

@@ -1,10 +1,10 @@
 {
   "calendarRibbonButton": {
-    "buttonNewJitsiMeeting": "Nouvelle conférence Jitsi"
+    "buttonNewJitsiMeeting": "Nouvelle visio villeurbanne"
   },
 
   "appointmentItem": {
-    "textBodyMessage": "\r\nJitsi-Meeting \r\n\nRejoignez la conférence : ",
+    "textBodyMessage": "\r\nVisio Villeurbanne \r\n\nRejoignez la conférence : ",
     "textBodyMessagePhone": "\n\rNuméro de téléphone : ",
     "textBodyPin": "\r\nNuméro de conférence: ",
     "textBodyDisclaimer": "\n\r"
@@ -42,6 +42,7 @@
     "labelRequireDisplayName": "Nom requis",
     "labelStartWithAudioMuted": "Audio désactivé par défaut",
     "labelStartWithVideoMuted": "Vidéo désactivée par défaut",
+    "checkBoxAddUrlToLocation": "Ajouter l’URL au champ Emplacement",
     "groupBoxLanguage": "Langues",
     "comboBoxLanguageItems": {
       "en": "Anglais",

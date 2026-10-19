@@ -32,7 +32,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>0.2.0.0</ApplicationVersion>
+    <ApplicationVersion>0.8.8.0</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -40,7 +40,7 @@
     <ProductName>JitsiMeetOutlookAddIn</ProductName>
     <PublisherName />
     <SupportUrl />
-    <FriendlyName>Jitsi Meet Outlook Add-In</FriendlyName>
+    <FriendlyName>Visio Villeurbanne</FriendlyName>
     <OfficeApplicationDescription />
     <LoadBehavior>3</LoadBehavior>
     <NuGetPackageImportStamp>

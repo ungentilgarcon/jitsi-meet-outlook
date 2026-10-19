@@ -21,6 +21,9 @@ namespace JitsiMeetOutlook
 {
     public class JitsiApiService
     {
+        private const string DefaultConferenceMapperEndpoint = "https://visioconference.villeurbanne.fr/conferenceMapper";
+        private const string DefaultPhoneNumberListEndpoint = "https://visioconference.villeurbanne.fr/phoneNumberList";
+
         readonly HttpClient client = new HttpClient();
 
         private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions
@@ -37,13 +40,18 @@ namespace JitsiMeetOutlook
 
         public async Task<string> getPIN(string roomName)
         {
-            string conferenceMapperRequestUrl = $"{Properties.Settings.Default.conferenceMapperEndpoint}?conference={roomName}@conference.{JitsiUrl.getDomain()}";
+            string conferenceMapperRequestUrl = $"{GetServerEndpoint(Properties.Settings.Default.conferenceMapperEndpoint, DefaultConferenceMapperEndpoint, "conferenceMapper")}?conference={roomName}@conference.{JitsiUrl.getDomain()}";
 
             try
             {
                 return await PINCache.GetOrCreate(roomName, async () =>
                 {
                     HttpResponseMessage response = await client.GetAsync(conferenceMapperRequestUrl);
+                    if (response.StatusCode == HttpStatusCode.ProxyAuthenticationRequired)
+                    {
+                        return String.Empty;
+                    }
+
                     response.EnsureSuccessStatusCode();
                     var responsestring = await response.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<ConferenceMapperResponse>(responsestring, serializerOptions).IdString;
@@ -51,6 +59,11 @@ namespace JitsiMeetOutlook
             }
             catch (Exception ex)
             {
+                if (IsProxyAuthenticationRequired(ex))
+                {
+                    return String.Empty;
+                }
+
                 MessageBox.Show("An Error occured within JitsiOutlook: " + ex.Message + ex.InnerException?.Message + ex.InnerException?.InnerException?.Message + " for " + conferenceMapperRequestUrl);
                 return "ERROR";
             }
@@ -58,12 +71,17 @@ namespace JitsiMeetOutlook
 
         public async Task<PhoneNumberListResponse> getPhoneNumbers(string roomName)
         {
-            string phoneNumberListRequestUrl = $"{Properties.Settings.Default.phoneNumberListEndpoint}?conference={roomName}@conference.{JitsiUrl.getDomain()}";
+            string phoneNumberListRequestUrl = $"{GetServerEndpoint(Properties.Settings.Default.phoneNumberListEndpoint, DefaultPhoneNumberListEndpoint, "phoneNumberList")}?conference={roomName}@conference.{JitsiUrl.getDomain()}";
             try
             {
                 return await PhoneNumbersCache.GetOrCreate(roomName, async () =>
                     {
                         HttpResponseMessage response = await client.GetAsync(phoneNumberListRequestUrl);
+                        if (response.StatusCode == HttpStatusCode.ProxyAuthenticationRequired)
+                        {
+                            return new PhoneNumberListResponse { Numbers = new Dictionary<string, List<string>>() };
+                        }
+
                         response.EnsureSuccessStatusCode();
                         var responsestring = await response.Content.ReadAsStringAsync();
                         PhoneNumberListResponse phoneNumbers = JsonSerializer.Deserialize<PhoneNumberListResponse>(responsestring, serializerOptions);
@@ -73,6 +91,11 @@ namespace JitsiMeetOutlook
             }
             catch (Exception ex)
             {
+                if (IsProxyAuthenticationRequired(ex))
+                {
+                    return new PhoneNumberListResponse { Numbers = new Dictionary<string, List<string>>() };
+                }
+
                 MessageBox.Show("An Error occured within JitsiOutlook: " + ex.Message + ex.InnerException?.Message + ex.InnerException?.InnerException?.Message + " for " + phoneNumberListRequestUrl);
                 return new PhoneNumberListResponse { Numbers = new Dictionary<string, List<string>>() };
             }
@@ -93,14 +116,54 @@ namespace JitsiMeetOutlook
                         request.Content = content;
                         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", GetJWT());
                         var response = await client.SendAsync(request);
+                        if (response.StatusCode == HttpStatusCode.ProxyAuthenticationRequired)
+                        {
+                            return;
+                        }
+
                         response.EnsureSuccessStatusCode();
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An Error occured within JitsiOutlook: " + ex.Message + ex.InnerException?.Message + ex.InnerException?.InnerException?.Message + " for " + Properties.Settings.Default.conferenceSchedulerEndpoint);
+                if (!IsProxyAuthenticationRequired(ex))
+                {
+                    MessageBox.Show("An Error occured within JitsiOutlook: " + ex.Message + ex.InnerException?.Message + ex.InnerException?.InnerException?.Message + " for " + Properties.Settings.Default.conferenceSchedulerEndpoint);
+                }
             }
+        }
+
+        private static bool IsProxyAuthenticationRequired(Exception exception)
+        {
+            for (Exception current = exception; current != null; current = current.InnerException)
+            {
+                if (current is WebException webException &&
+                    webException.Response is HttpWebResponse response &&
+                    response.StatusCode == HttpStatusCode.ProxyAuthenticationRequired)
+                {
+                    return true;
+                }
+
+                if (current.Message.IndexOf("(407)", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static string GetServerEndpoint(string configuredEndpoint, string defaultEndpoint, string apiPath)
+        {
+            if (String.IsNullOrWhiteSpace(configuredEndpoint) ||
+                String.Equals(configuredEndpoint.TrimEnd('/'), defaultEndpoint, StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(configuredEndpoint.TrimEnd('/'), $"https://api.jitsi.net/{apiPath}", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{JitsiUrl.getUrlBase()}{apiPath}";
+            }
+
+            return configuredEndpoint;
         }
 
         private string GetJWT()

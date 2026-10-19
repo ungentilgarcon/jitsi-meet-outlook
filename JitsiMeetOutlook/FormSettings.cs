@@ -17,7 +17,7 @@ namespace JitsiMeetOutlook
             InitializeComponent();
 
             // Set default domain
-            defaultDomain = "meet.jit.si";
+            defaultDomain = "visioconference.villeurbanne.fr";
 
             // Set radio buttons
             loadDomainButtons();
@@ -25,6 +25,7 @@ namespace JitsiMeetOutlook
             loadStartWithAudioMutedButtons();
             loadStartWithVideoMutedButtons();
             loadRequireDisplayNameButtons();
+            checkBoxAddUrlToLocation.Checked = Properties.Settings.Default.addUrlToLocation;
 
             // Load text field
             textBoxDomain.Text = Properties.Settings.Default.Domain;
@@ -166,6 +167,8 @@ namespace JitsiMeetOutlook
             {
                 Properties.Settings.Default.startWithVideoMuted = false;
             }
+
+            Properties.Settings.Default.addUrlToLocation = checkBoxAddUrlToLocation.Checked;
 
             // Set language
             string languageSelection = (string)comboBoxLanguage.SelectedItem;

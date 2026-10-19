@@ -38,6 +38,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.groupBoxToggleDefaults = new System.Windows.Forms.GroupBox();
+            this.checkBoxAddUrlToLocation = new System.Windows.Forms.CheckBox();
             this.panelStartWithVideoMuted = new System.Windows.Forms.Panel();
             this.radioButtonStartWithVideoMutedToggled = new System.Windows.Forms.RadioButton();
             this.radioButtonStartWithVideoMutedUntoggled = new System.Windows.Forms.RadioButton();
@@ -184,6 +185,16 @@
             this.groupBoxToggleDefaults.TabIndex = 5;
             this.groupBoxToggleDefaults.TabStop = false;
             this.groupBoxToggleDefaults.Text = "Default meeting options";
+            //
+            // checkBoxAddUrlToLocation
+            //
+            this.checkBoxAddUrlToLocation.AutoSize = true;
+            this.checkBoxAddUrlToLocation.Location = new System.Drawing.Point(9, 124);
+            this.checkBoxAddUrlToLocation.Name = "checkBoxAddUrlToLocation";
+            this.checkBoxAddUrlToLocation.Size = new System.Drawing.Size(211, 17);
+            this.checkBoxAddUrlToLocation.TabIndex = 6;
+            this.checkBoxAddUrlToLocation.Text = "Add URL to appointment Location field";
+            this.checkBoxAddUrlToLocation.UseVisualStyleBackColor = true;
             // 
             // panelStartWithVideoMuted
             // 
@@ -440,6 +451,7 @@
             // tabPageMeetingOptions
             // 
             this.tabPageMeetingOptions.Controls.Add(this.groupBoxToggleDefaults);
+            this.tabPageMeetingOptions.Controls.Add(this.checkBoxAddUrlToLocation);
             this.tabPageMeetingOptions.Location = new System.Drawing.Point(4, 22);
             this.tabPageMeetingOptions.Name = "tabPageMeetingOptions";
             this.tabPageMeetingOptions.Size = new System.Drawing.Size(320, 168);
@@ -538,6 +550,7 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.GroupBox groupBoxToggleDefaults;
+        private System.Windows.Forms.CheckBox checkBoxAddUrlToLocation;
         private System.Windows.Forms.Label labelToggled;
         private System.Windows.Forms.Label labelUntoggled;
         private System.Windows.Forms.Panel panelRequireDisplayName;

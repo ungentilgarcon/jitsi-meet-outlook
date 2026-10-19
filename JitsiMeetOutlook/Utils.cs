@@ -6,11 +6,14 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace JitsiMeetOutlook
 {
     public class Utils
     {
+        public const string JitsiAppointmentPropertyName = "VisioVilleurbanneMeeting";
+
         private static string escapeDomain(string domain)
         {
             string escapedDomain = Regex.Escape(domain);
@@ -36,6 +39,27 @@ namespace JitsiMeetOutlook
         {
             string roomId = Regex.Match(body, "(?<=" + escapeDomain(domain) + ")\\S+?(?=(#config|&config|\\s))").Value; // Match all non-blanks after jitsi url and before config or end
             return roomId;
+        }
+
+        public static bool IsJitsiAppointment(Outlook.AppointmentItem appointment, string domain)
+        {
+            if (appointment == null)
+            {
+                return false;
+            }
+
+            if (appointment.Location == "Jitsi Meet")
+            {
+                return true;
+            }
+
+            Outlook.UserProperty marker = appointment.UserProperties.Find(JitsiAppointmentPropertyName, false);
+            if (marker != null && marker.Value is bool isJitsiMeeting && isJitsiMeeting)
+            {
+                return true;
+            }
+
+            return !string.IsNullOrEmpty(findRoomId(appointment.Body, domain));
         }
 
         public static void RunInThread(Action function)

@@ -71,7 +71,7 @@
             this.groupJitsiMeetControls.Items.Add(this.box1);
             this.groupJitsiMeetControls.Items.Add(this.box2);
             this.groupJitsiMeetControls.Items.Add(this.box3);
-            this.groupJitsiMeetControls.Label = "Jitsi Meet";
+            this.groupJitsiMeetControls.Label = "VDV Visio";
             this.groupJitsiMeetControls.Name = "groupJitsiMeetControls";
             this.groupJitsiMeetControls.Position = this.Factory.RibbonPosition.BeforeOfficeId("GroupAttendees");
             this.groupJitsiMeetControls.Visible = false;
@@ -140,7 +140,7 @@
             // groupNewMeeting
             // 
             this.groupNewMeeting.Items.Add(this.buttonNewJitsiMeeting);
-            this.groupNewMeeting.Label = "Jitsi Meet";
+            this.groupNewMeeting.Label = "VDV Visio";
             this.groupNewMeeting.Name = "groupNewMeeting";
             this.groupNewMeeting.Position = this.Factory.RibbonPosition.BeforeOfficeId("GroupAttendees");
             this.groupNewMeeting.Visible = false;

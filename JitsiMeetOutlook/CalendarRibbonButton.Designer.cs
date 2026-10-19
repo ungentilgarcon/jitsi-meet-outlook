@@ -52,7 +52,7 @@
             // JitsiMeet
             // 
             this.JitsiMeet.Items.Add(this.buttonNewJitsiMeeting);
-            this.JitsiMeet.Label = "Jitsi Meet";
+            this.JitsiMeet.Label = "VDV Visio";
             this.JitsiMeet.Name = "JitsiMeet";
             this.JitsiMeet.Position = this.Factory.RibbonPosition.BeforeOfficeId("GroupGoto");
             // 

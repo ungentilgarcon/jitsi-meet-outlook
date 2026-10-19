@@ -28,7 +28,7 @@ namespace JitsiMeetOutlook
             Outlook.Inspector inspector = (Outlook.Inspector)this.Context;
             appointmentItem = inspector.CurrentItem as Outlook.AppointmentItem;
 
-            if (appointmentItem.Location == "Jitsi Meet")
+            if (Utils.IsJitsiAppointment(appointmentItem, oldDomain))
             {
                 groupJitsiMeetControls.Visible = true;
                 groupNewMeeting.Visible = false;
@@ -120,6 +120,10 @@ namespace JitsiMeetOutlook
             object missing = System.Reflection.Missing.Value;
 
             var link = JitsiUrl.getUrlBase() + roomId;
+            if (Properties.Settings.Default.addUrlToLocation)
+            {
+                appointmentItem.Location = link;
+            }
 
 
 
@@ -160,8 +164,11 @@ namespace JitsiMeetOutlook
                     endSel.InsertAfter("\n");
                     endSel.MoveDown(Word.WdUnits.wdLine);
                 }
-                endSel.InsertAfter(Globals.ThisAddIn.getElementTranslation("appointmentItem", "textBodyPin") + pinNumber);
-                endSel.EndKey(Word.WdUnits.wdLine);
+                if (!string.IsNullOrEmpty(pinNumber))
+                {
+                    endSel.InsertAfter(Globals.ThisAddIn.getElementTranslation("appointmentItem", "textBodyPin") + pinNumber);
+                    endSel.EndKey(Word.WdUnits.wdLine);
+                }
             }
             endSel.InsertAfter("\n");
             endSel.MoveDown(Word.WdUnits.wdLine);
@@ -229,21 +236,26 @@ namespace JitsiMeetOutlook
                 }
             }
 
-
+            appointmentItem.Location = Properties.Settings.Default.addUrlToLocation
+                ? JitsiUrl.getUrlBase() + newRoomIdLegal
+                : "Jitsi Meet";
 
             // Update PIN 
             var newPIN = await Globals.ThisAddIn.JitsiApiService.getPIN(newRoomIdLegal);
             var oldPIN = await Globals.ThisAddIn.JitsiApiService.getPIN(oldRoomId);
 
-            Find findPINObject = wordDocument.Content.Find;
-            findPINObject.ClearFormatting();
-            findPINObject.Text = oldPIN;
-            findPINObject.Replacement.ClearFormatting();
-            findPINObject.Format = true;
+            if (!string.IsNullOrEmpty(oldPIN) && !string.IsNullOrEmpty(newPIN))
+            {
+                Find findPINObject = wordDocument.Content.Find;
+                findPINObject.ClearFormatting();
+                findPINObject.Text = oldPIN;
+                findPINObject.Replacement.ClearFormatting();
+                findPINObject.Format = true;
 
-            findPINObject.Execute(ref missing, ref missing, ref missing, ref missing, ref missing,
-                ref missing, ref missing, ref missing, ref missing, newPIN,
-                WdReplace.wdReplaceAll, ref missing, ref missing, ref missing, ref missing);
+                findPINObject.Execute(ref missing, ref missing, ref missing, ref missing, ref missing,
+                    ref missing, ref missing, ref missing, ref missing, newPIN,
+                    WdReplace.wdReplaceAll, ref missing, ref missing, ref missing, ref missing);
+            }
 
         }
 

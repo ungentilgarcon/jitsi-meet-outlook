@@ -36,6 +36,7 @@
       "labelRequireDisplayName": "Nombre requerido",
       "labelStartWithAudioMuted": "Silenciar al empezar",
       "labelStartWithVideoMuted": "Sin video al empezar",
+      "checkBoxAddUrlToLocation": "Añadir URL al campo Ubicación",
       "groupBoxLanguage": "Lenguaje",
       "comboBoxLanguageItems": {
         "en": "Inglés",

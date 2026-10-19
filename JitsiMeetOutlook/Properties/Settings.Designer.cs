@@ -25,7 +25,7 @@ namespace JitsiMeetOutlook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("meet.jit.si")]
+        [global::System.Configuration.DefaultSettingValueAttribute("visioconference.villeurbanne.fr")]
         public string Domain {
             get {
                 return ((string)(this["Domain"]));
@@ -70,6 +70,18 @@ namespace JitsiMeetOutlook.Properties {
                 this["startWithVideoMuted"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool addUrlToLocation {
+            get {
+                return ((bool)(this["addUrlToLocation"]));
+            }
+            set {
+                this["addUrlToLocation"] = value;
+            }
+        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -97,7 +109,7 @@ namespace JitsiMeetOutlook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        [global::System.Configuration.DefaultSettingValueAttribute("fr")]
         public string language {
             get {
                 return ((string)(this["language"]));
@@ -121,7 +133,7 @@ namespace JitsiMeetOutlook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://api.jitsi.net/conferenceMapper")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://visioconference.villeurbanne.fr/conferenceMapper")]
         public string conferenceMapperEndpoint {
             get {
                 return ((string)(this["conferenceMapperEndpoint"]));
@@ -133,7 +145,7 @@ namespace JitsiMeetOutlook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://api.jitsi.net/phoneNumberList")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://visioconference.villeurbanne.fr/phoneNumberList")]
         public string phoneNumberListEndpoint {
             get {
                 return ((string)(this["phoneNumberListEndpoint"]));
