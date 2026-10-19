@@ -2,8 +2,8 @@
 
 
 ## pourquoi ce fork?
-Ce fork est une déclinaison maison du plugin initial. SOn objectif initial était de passer outre une erreur de ce programme sur notre serveur de Jitsi, mais quitte à le modifier autant l'adapter pleinement.
-vous pourrez l'adapter à vos jitis en modifiant le json de config facilement.
+Ce fork est une déclinaison maison du superbe plugin de timetheoretical. Son objectif initial était de passer outre une erreur de ce plugin sur notre serveur de Jitsi, mais quitte à le modifier autant l'adapter pleinement.
+vous pourrez l'adapter facilement  à vos jitsi en modifiant les fichiers de config csproj, les fichiers app.config formsettings.cs jitsiapiservices settings.designer.cs et settings.settings.
 
 
 Ce README contient une description des adaptations effectuées depuis la version initiale
