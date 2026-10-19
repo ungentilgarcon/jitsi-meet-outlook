@@ -1,5 +1,12 @@
 # Jitsi Meet Outlook Add-In
 
+
+## pourquoi ce fork?
+Ce fork est une déclinaison maison du plugin initial. SOn objectif initial était de passer outre une erreur de ce programme sur notre serveur de Jitsi, mais quitte à le modifier autant l'adapter pleinement.
+vous pourrez l'adapter à vos jitis en modifiant le json de config facilement.
+
+
+Ce README contient une description des adaptations effectuées depuis la version initiale
 ## Introduction
 
 This is a small plug-in that aims to integrate Jitsi Meet with Microsoft Outlook. Specifically, it adds two main features:
