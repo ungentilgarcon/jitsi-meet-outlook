@@ -2,7 +2,10 @@
 using Microsoft.Office.Interop.Outlook;
 using System;
 using System.IO;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
@@ -10,28 +13,48 @@ namespace JitsiMeetOutlook
 {
     public partial class ThisAddIn
     {
-        public JitsiApiService JitsiApiService;
+        private readonly Lazy<JitsiApiService> _jitsiApiService = new Lazy<JitsiApiService>(() => new JitsiApiService());
+        public JitsiApiService JitsiApiService => _jitsiApiService.Value;
 
-        // Define these so they are not garbarge collected
-        private MAPIFolder calendarFolder;
-        private Items calendarFolderItems;
+        private MAPIFolder _calendarFolder;
+        private Items _calendarFolderItems;
+        private bool _calendarEventsHooked;
 
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
-            checkFirstRunSettings();
-            readLanguageJson();
+            // Near-zero work on UI thread - just schedule background initialization
+            _ = Task.Run(InitializeAsync);
+        }
 
-            JitsiApiService = new JitsiApiService();
+        private async Task InitializeAsync()
+        {
+            try
+            {
+                await Task.Yield();
+                checkFirstRunSettingsAsync();
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Startup background error: {ex}");
+            }
+        }
 
-            // Create Hooks for all Outlook Calendar Items
-            // Maybe there is a better way, but thats the best I could find.
-            // It will call the change event multiple times!
-            calendarFolder = this.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar);
-            calendarFolderItems = calendarFolder.Items;
-            calendarFolderItems.ItemAdd += new
-    ItemsEvents_ItemAddEventHandler(AppointmentAddedOrChanged);
-            calendarFolderItems.ItemChange += new
-    ItemsEvents_ItemChangeEventHandler(AppointmentAddedOrChanged);
+        private void EnsureCalendarEventsHooked()
+        {
+            if (_calendarEventsHooked) return;
+
+            try
+            {
+                _calendarFolder = this.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar);
+                _calendarFolderItems = _calendarFolder.Items;
+                _calendarFolderItems.ItemAdd += new ItemsEvents_ItemAddEventHandler(AppointmentAddedOrChanged);
+                _calendarFolderItems.ItemChange += new ItemsEvents_ItemChangeEventHandler(AppointmentAddedOrChanged);
+                _calendarEventsHooked = true;
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"HookCalendarEvents error: {ex}");
+            }
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -40,17 +63,34 @@ namespace JitsiMeetOutlook
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
         }
 
-        private void checkFirstRunSettings()
+        private void checkFirstRunSettingsAsync()
         {
-            if (isFirstRun())
+            // Quick check without file I/O first
+            if (!IsFirstRunNeeded()) return;
+
+            Task.Run(() =>
             {
-                customSettingsOnFirstRun();
-            }
-            else if (isTxtOlderThanInstallation())
+                try
+                {
+                    if (isFirstRun() || isTxtOlderThanInstallation())
+                    {
+                        customSettingsOnFirstRun();
+                    }
+                }
+                catch { /* ignore file errors */ }
+            });
+        }
+
+        private bool IsFirstRunNeeded()
+        {
+            // Quick heuristic - avoid file I/O if marker exists and is recent
+            try
             {
-                File.Delete(firstRunMarkerFilePath());
-                customSettingsOnFirstRun();
+                string markerPath = firstRunMarkerFilePath();
+                return !File.Exists(markerPath) ||
+                       (DateTime.Now - File.GetLastWriteTime(markerPath)).TotalDays > 1;
             }
+            catch { return true; }
         }
 
         private bool isFirstRun()
@@ -88,6 +128,8 @@ namespace JitsiMeetOutlook
 
         public void AppointmentAddedOrChanged(object appointment)
         {
+            EnsureCalendarEventsHooked();
+
             // Make sure we only react to Appointments
             if (appointment is AppointmentItem)
             {
@@ -107,7 +149,7 @@ namespace JitsiMeetOutlook
                         var scheduledConference = new ConferenceSchedulerMessage
                         {
 
-                            ConferenceName = Utils.findRoomId(item.Body,Properties.Settings.Default.Domain),
+                            ConferenceName = Utils.findRoomId(item.Body, Properties.Settings.Default.Domain),
                             Start = item.StartUTC,
                             End = item.EndUTC,
                             Recurrance = recurrencePattern

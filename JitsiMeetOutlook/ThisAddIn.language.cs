@@ -2,31 +2,29 @@
 using System.Text;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace JitsiMeetOutlook
 {
     public partial class ThisAddIn
     {
-        private JsonElement languageJsonRoot;
-
-        private void readLanguageJson()
+        private readonly Lazy<JsonElement> _lazyLanguageJsonRoot = new Lazy<JsonElement>(() =>
         {
             try
             {
                 byte[] jsonFile = findJson(Properties.Settings.Default.language);
-                string jsonString = Encoding.UTF8.GetString(jsonFile);
-
-                JsonDocument document = JsonDocument.Parse(jsonString);
-                languageJsonRoot = document.RootElement;
+                if (jsonFile != null)
+                {
+                    string jsonString = Encoding.UTF8.GetString(jsonFile);
+                    JsonDocument document = JsonDocument.Parse(jsonString);
+                    return document.RootElement;
+                }
             }
-            catch (Exception ex)
-            {
-                //Do nothing
-            }
+            catch { }
+            return default;
+        }, LazyThreadSafetyMode.ExecutionAndPublication);
 
-        }
-
-        private byte[] findJson(string language)
+        private static byte[] findJson(string language)
         {
             Dictionary<string, byte[]> languages = new Dictionary<string, byte[]>();
             languages.Add("en", Resources.languages.en);
@@ -48,12 +46,13 @@ namespace JitsiMeetOutlook
 
         public JsonElement getLanguageJsonRoot()
         {
-            return languageJsonRoot;
+            return _lazyLanguageJsonRoot.Value;
         }
 
         public string getElementTranslation(string jsonGroup, string jsonElement)
         {
-            return languageJsonRoot.GetProperty(jsonGroup).GetProperty(jsonElement).GetString();
+            var root = _lazyLanguageJsonRoot.Value;
+            return root.GetProperty(jsonGroup).GetProperty(jsonElement).GetString();
         }
 
     }

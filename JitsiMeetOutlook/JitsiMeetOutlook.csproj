@@ -408,12 +408,11 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>cert.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>5DB6434EA827A1EDABD40E561A9A475EF6F39DF5</ManifestCertificateThumbprint>
-  </PropertyGroup>
+<PropertyGroup Condition="'$(ManifestKeyFile)' == ''">
+</PropertyGroup>
+<PropertyGroup Condition="'$(ManifestCertificateThumbprint)' == ''">
+    <ManifestCertificateThumbprint>6AA2E9073B220D37396D87942FFA5E54B349294D</ManifestCertificateThumbprint>
+</PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
